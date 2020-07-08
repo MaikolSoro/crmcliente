@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Sidebar = () => {
 	return ( 
@@ -6,6 +7,24 @@ const Sidebar = () => {
 			<div>
 				<p className="text-white text-2xl font-black">CRM Clientes</p>
 			</div>
+			<nav className="mt-5 list-none">
+				<li>
+					<Link href="/">
+						<a className="text-white mb-2 block">
+							Clientes
+						</a>
+					</Link>
+				</li>
+
+				<li>
+					<Link href="/pedidos">
+						<a className="text-white mb-2 block">
+							Pedidos
+						</a>
+					</Link>
+				</li>
+				
+			</nav>
 		</aside>
 	 );
 }
