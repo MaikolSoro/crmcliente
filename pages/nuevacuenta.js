@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -22,8 +23,8 @@ const NuevaCuenta = () => {
 	//Mutation para crear nuevos usuarios
 
 	const[ nuevoUsuario ] = useMutation(NUEVA_CUENTA)
-	
-	
+	// Routing
+	const router = useRouter();
 	// Validación del formulario
 	const formik = useFormik({
 		initialValues: {
@@ -54,8 +55,15 @@ const NuevaCuenta = () => {
 					console.log(data);
 
 				//Usuario creado correctamente
+				guardarMensaje(`Se creo correctamente el usuario: ${data.nuevoUsuario.nombre}`);
 
+				setTimeout(()=>{
+					guardarMensaje(null);
+					router.push('/login');
+				 },3000);
 				//Redirigir usuario para iniciar sesión
+
+				 
 
 			 	} catch (error) {
 					 guardarMensaje(error.message.replace('GraphQL error:', ''));
