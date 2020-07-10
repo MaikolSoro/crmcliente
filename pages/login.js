@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useMutation, gql } from '@apollo/client';
-
+import { useRouter } from 'next/router';
 const AUTENTICAR_USUARIO =gql`
 	mutation autenticarUsuario($input: AutenticarInput) {
 		autenticarUsuario(input:$input) {
@@ -14,6 +14,10 @@ const AUTENTICAR_USUARIO =gql`
 
 const Login = () => {
 
+	// routing
+	const router = useRouter();
+
+	const [mensaje, guardarMensaje] = useState(null);
 	// mutation para crear nuevos usuarios en apollo
 	const [autenticarUsuario] = useMutation(AUTENTICAR_USUARIO);
 
@@ -27,7 +31,6 @@ const Login = () => {
 			password: Yup.string().required('El password es obligatorio')
 		}),
 		onSubmit: valores =>{
-			// console.log(valores);
 			const { email, password } = valores;
 			try {
 				const { data } = await autenticarUsuario({
@@ -39,16 +42,41 @@ const Login = () => {
 					}
 				});
 				console.log(data);
+				guardarMensaje('Autenticando...'); 
+
+				// Guardar el token en el localStorage
+				const { token } = data.autenticarUsuario;
+				localStorage.setItem('token', token);
+
+				//Rediccionar hacia clientes
+				setTimeout(() => {
+					guardarMensaje(null);
+					router.push('/');
+				}, 2000);
+
 			} catch (error) {
-				console.log(error);
+				guardarMensaje(error.message.replace('GraphQL error: ', ''));
+				setTimeout(()=> {
+					guardarMensaje(null);
+				 },3000);
 			}
 		}
 	});
+
+	const  mostrarMensaje = () =>{
+		return (
+			<div className="bg-white py-3 px-3 w-full my-3 max-w-sm text-center mx-auto">
+				<p>{ mensaje }</p>
+			</div>
+		)
+	}
+
 	return ( 
 		<>
 			<Layout>
 
 				<h1 className="text-center text-2xl text-white font-light">Login</h1>
+				{ message &&  mostrarMensaje() }
 				<div className="flex justify-center mt-5">
 					<div className="w-full max-w-sm">
 						 <form className="bg-white rounded shadow-md px-8 pt-6 pb-8 mb-4"

@@ -66,7 +66,7 @@ const NuevaCuenta = () => {
 				 
 
 			 	} catch (error) {
-					 guardarMensaje(error.message.replace('GraphQL error:', ''));
+					 guardarMensaje(error.message.replace('GraphQL error: ', ''));
 					 
 					 setTimeout(()=>{
 						guardarMensaje(null);
