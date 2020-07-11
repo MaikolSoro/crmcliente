@@ -18,15 +18,39 @@ const NUEVO_CLIENTE = gql`
 		}
 	}	
 `;
-
+const OBTENER_CLIENTES_USUARIO = gql`
+    query obtenerClientesVendedor {
+      obtenerClientesVendedor {
+            id
+            nombre
+            apellido
+            empresa
+            email
+      }
+    }
+`;
 
 const NuevoCliente = () => {
 
 	// Routing
 	const router = useRouter();
 
-	//Mutation para crear nuevos  clientes
-	const [nuevoCliente] = useMutation(NUEVO_CLIENTE)
+	//Mutation para crear nuevos clientes
+	const [nuevoCliente] = useMutation(NUEVO_CLIENTE, {
+		update(cache,{ data: { nuevoCliente }}) {
+			// Obtener el objeto de cache que deseamos actualizar
+
+			const { obtenerClientesVendedor } = cache.readQuery({ query: OBTENER_CLIENTES_USUARIO });
+
+			// Rescribimos el cache( el cache nunca se debe modificar )
+			cache.writeQuery({
+				query: OBTENER_CLIENTES_USUARIO,
+				data:{
+					obtenerClientesVendedor : [...obtenerClientesVendedor, nuevoCliente ]
+				}
+			})
+		}
+	})
 
 	const formik = 	useFormik({
 		initialValues: {
@@ -44,25 +68,25 @@ const NuevoCliente = () => {
 		}),
 		onSubmit: async valores => {
 			const { nombre, apellido, empresa, email, telefono } = valores
-		try {
-			const { data } = await nuevoCliente({
-				variables: {
-					input:{
-						nombre,
-						apellido,
-						empresa,
-						email,
-						telefono
+			try {
+				const { data } = await nuevoCliente({
+					variables: {
+						input:{
+							nombre,
+							apellido,
+							empresa,
+							email,
+							telefono
+						}
 					}
-				}
-			});
-			// console.log(data);
-			router.push('/'); // redireccionar hacia clientes
+				});
+				// console.log(data.nuevoCliente);
+				router.push('/'); // redireccionar hacia clientes
 
-		} catch (error) {
-			console.log(error);
-		}
-		}
+			} catch (error) {
+				console.log(error);
+			}
+	    }
 	})
 	return ( 
 		<Layout>
