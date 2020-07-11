@@ -11,17 +11,19 @@ const authLink = setContext((_,{ headers }) => {
 
 	// leer el storage almacenado
 	const token	 = localStorage.getItem('token');
+	// console.log(token);
 	return {
 		headers: {
 			...headers,
 			authorization: token ? `Bearer ${token}` : ''
 		}
+		
 	}
+	
 });
 const client = new ApolloClient({
 	connectToDevTools: true,
 	cache: new InMemoryCache(),
 	link: authLink.concat( httpLink )
 });
-
 export default client;

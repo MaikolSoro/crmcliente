@@ -71,12 +71,12 @@ const NuevaCuenta = () => {
 					 setTimeout(()=>{
 						guardarMensaje(null);
 					 },3000);
-			 }
+			 	}
 		}
 	});
 
 	// if(loading) return 'Cargando...';
-	const  mostrarMensaje = () =>{
+	const mostrarMensaje = () =>{
 		return (
 			<div className="bg-white py-3 px-3 w-full my-3 max-w-sm text-center mx-auto">
 				<p>{ mensaje }</p>
@@ -87,6 +87,7 @@ const NuevaCuenta = () => {
 		<>
 			<Layout>
 				{mensaje && mostrarMensaje() }
+
 				<h1 className="text-center text-2xl text-white font-light">Crear Nueva cuenta</h1>
 				<div className="flex justify-center mt-5">
 					<div className="w-full max-w-sm">

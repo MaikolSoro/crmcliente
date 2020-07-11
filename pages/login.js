@@ -4,7 +4,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useMutation, gql } from '@apollo/client';
 import { useRouter } from 'next/router';
-const AUTENTICAR_USUARIO =gql`
+
+const AUTENTICAR_USUARIO = gql`
 	mutation autenticarUsuario($input: AutenticarInput) {
 		autenticarUsuario(input:$input) {
 			token
@@ -30,7 +31,7 @@ const Login = () => {
 			email: Yup.string().email('El email no es válido').required('El email no puede ir vacio'),
 			password: Yup.string().required('El password es obligatorio')
 		}),
-		onSubmit: valores =>{
+		onSubmit: async valores =>{
 			const { email, password } = valores;
 			try {
 				const { data } = await autenticarUsuario({
@@ -41,7 +42,6 @@ const Login = () => {
 						}
 					}
 				});
-				console.log(data);
 				guardarMensaje('Autenticando...'); 
 
 				// Guardar el token en el localStorage
@@ -58,7 +58,7 @@ const Login = () => {
 				guardarMensaje(error.message.replace('GraphQL error: ', ''));
 				setTimeout(()=> {
 					guardarMensaje(null);
-				 },3000);
+				 },2000);
 			}
 		}
 	});
@@ -76,7 +76,9 @@ const Login = () => {
 			<Layout>
 
 				<h1 className="text-center text-2xl text-white font-light">Login</h1>
-				{ message &&  mostrarMensaje() }
+
+				{ mensaje &&  mostrarMensaje() }
+
 				<div className="flex justify-center mt-5">
 					<div className="w-full max-w-sm">
 						 <form className="bg-white rounded shadow-md px-8 pt-6 pb-8 mb-4"
