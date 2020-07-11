@@ -1,5 +1,7 @@
 import Layout from '../components/Layout';
 import { gql, useQuery } from '@apollo/client';
+import { useRouter, Router } from'next/router';
+import { route } from 'next/dist/next-server/server/router';
 
 const OBTENER_CLIENTES_USUARIO = gql`
     query obtenerClientesVendedor {
@@ -15,13 +17,19 @@ const OBTENER_CLIENTES_USUARIO = gql`
 
 const Index = () => {
 
+  // routing
+  const router = useRouter();
   // Consulta de apolllo
   const { data, loading, error } = useQuery(OBTENER_CLIENTES_USUARIO);
-  console.log(data);
-  console.log(loading)
-  console.log(error)
+  // console.log(data);
+  // console.log(loading)
+  // console.log(error)
 
-   if(loading) return 'Cargando...';
+   if(loading) return 'Cargando....';
+
+   if(!data.obtenerClientesVendedor) {
+     return router.push('/login');
+   }
 
   return (
     <div>
