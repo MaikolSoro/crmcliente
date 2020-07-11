@@ -1,11 +1,22 @@
 import React from 'react';
 import Swal from 'sweetalert2';
+import { gql, useMutation } from '@apollo/client';
+
+const ELIMINAR_CLIENTE = gql`
+	mutation eliminarCliente($id: ID!) {
+  		eliminarCliente(id:$id)
+	}
+`;
 
 const Cliente = ({cliente}) => {
+
+	// mutation para eliminar cliente
+	const [ eliminarCliente ] = useMutation( ELIMINAR_CLIENTE );
+	
 	const { nombre, apellido, empresa, email } = cliente;
 
 	// Eliminar un cliente
-	const confirmarEliminarCliente = id => {
+	const confirmarEliminarCliente = () => {
 		
 		Swal.fire({
             title: '¿Deseas eliminar a este cliente?',
@@ -16,15 +27,27 @@ const Cliente = ({cliente}) => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Si, Eliminar',
             cancelButtonText: 'No, Cancelar'
-          }).then((result) => {
+          }).then( async (result) => {
             if (result.value) {
-				console.log('Eliminando...', id);
+
+				try {
+					// Eliminar por el ID
+					const { data } =  await eliminarCliente({
+						variables: {
+							id 
+						}
+					});
+					console.log(data);
                     // Mostrar una alerta
                     Swal.fire(
                         'Eliminado!',
-						'Your',
+						data.eliminarCliente,
                         'success'
                     )
+					
+				} catch (error) {
+					console.log(error);
+				}
             }
           })
 	}
