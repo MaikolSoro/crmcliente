@@ -7,18 +7,40 @@ const ELIMINAR_CLIENTE = gql`
   		eliminarCliente(id:$id)
 	}
 `;
+const OBTENER_CLIENTES_USUARIO = gql`
+    query obtenerClientesVendedor {
+      obtenerClientesVendedor {
+            id
+            nombre
+            apellido
+            empresa
+            email
+      }
+    }
+`;
 
 const Cliente = ({cliente}) => {
 
-	// mutation para eliminar cliente
-	const [ eliminarCliente ] = useMutation( ELIMINAR_CLIENTE );
-	
-	const { nombre, apellido, empresa, email } = cliente;
+    // mutation para eliminar cliente
+    const [ eliminarCliente ] = useMutation( ELIMINAR_CLIENTE, {
+        update(cache) {
+            // obtener una copia del objeto de cache
+            const { obtenerClientesVendedor } = cache.readQuery({ query: OBTENER_CLIENTES_USUARIO });
 
-	// Eliminar un cliente
+            // Reescribir el cache
+            cache.writeQuery({
+                query: OBTENER_CLIENTES_USUARIO,
+                data: {
+                    obtenerClientesVendedor : obtenerClientesVendedor.filter( clienteActual => clienteActual.id !== id )
+                }
+            })
+        }
+    }  );
+	const { nombre, apellido, empresa, email, id } = cliente;
+
+	 // Elimina un cliente
 	const confirmarEliminarCliente = () => {
-		
-		Swal.fire({
+        Swal.fire({
             title: '¿Deseas eliminar a este cliente?',
             text: "Esta acción no se puede deshacer",
             icon: 'warning',
@@ -30,27 +52,28 @@ const Cliente = ({cliente}) => {
           }).then( async (result) => {
             if (result.value) {
 
-				try {
-					// Eliminar por el ID
-					const { data } =  await eliminarCliente({
-						variables: {
-							id 
-						}
-					});
-					console.log(data);
+                try {
+                    // Eliminar por ID
+                    const { data } = await eliminarCliente({
+                        variables: {
+                            id
+                        }
+                    });
+                    // console.log(data);
+
                     // Mostrar una alerta
                     Swal.fire(
                         'Eliminado!',
-						data.eliminarCliente,
+                        data.eliminarCliente,
                         'success'
                     )
-					
-				} catch (error) {
-					console.log(error);
-				}
+                } catch (error) {
+                    console.log(error);
+                }
             }
           })
-	}
+    }
+	
 	return ( 
 		<tr>
 			<td className="border px-4 py-2"> {nombre} {apellido}</td>
@@ -67,7 +90,7 @@ const Cliente = ({cliente}) => {
 				</button>
 			</td>
 	  	</tr>
-	 );
+	);
 }
  
 export default Cliente;
