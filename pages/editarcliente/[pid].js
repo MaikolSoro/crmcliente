@@ -1,10 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import { Formik } from 'formik';
 import * as Yup from 'yup'
- 
+import Swal from 'sweetalert2';
 const OBTENER_CLIENTE = gql`
 	query obtenerCliente($id:ID!) {
 		obtenerCliente(id:$id) {
@@ -16,7 +16,15 @@ const OBTENER_CLIENTE = gql`
 		}
 	}
 `;
+const ACTUALIZAR_CLIENTE = gql`
 
+	mutation actualizarCliente($id: ID!, $input: ClienteInput) {
+		actualizarCliente(id: $id,input: $input){
+			nombre
+			email
+		}
+	}
+`;
 
 const EditarCliente = () => {
 
@@ -24,7 +32,6 @@ const EditarCliente = () => {
 	const router = useRouter();
 	const { query: { id } } = router;
 
-	console.log(id);
 
 	// consultar para obtener cliente
 	const { data, loading, error } = useQuery(OBTENER_CLIENTE, {
@@ -32,8 +39,10 @@ const EditarCliente = () => {
 		variables:{
 			id
 		}
-
 	});
+
+	// Actualizar cliente
+	const [ actualizarCliente ] = useMutation(ACTUALIZAR_CLIENTE);
 
 	//Schema de validación
 	const schemaValidacion = Yup.object({
@@ -50,8 +59,38 @@ const EditarCliente = () => {
 	
 	if(loading) return 'Cargando...';
 
-	console.log(data.obtenerCliente)
+	const { obtenerCliente } = data;
 
+	//Modifica  el cliente en la BD
+	const actualizarInfoCliente = async valores => {
+		const { nombre, apellido, empresa, email, telefono } = valores;
+
+		try {
+				const { data } = await actualizarCliente({
+					variables: {
+						id,
+						input: {
+							nombre, 
+							apellido, 
+							empresa, 
+							email,
+							telefono
+						}
+					}
+				});
+				// Mostrar alerta
+				Swal.fire(
+					'Actualizado',
+					'El cliente se actualizó correctamente',
+					'success'
+				)
+				// Redireccionar
+				router.push('/');
+
+		} catch (error) {
+				console.log(error);
+		}
+	}
 	return ( 
 		<Layout>
 			<h1 className="text-2xl text-gray-800 font-light">Editar Cliente</h1>
@@ -59,9 +98,13 @@ const EditarCliente = () => {
 				<div className="w-full max-w-lg">
 					<Formik
 						validationSchema={ schemaValidacion }
+						enableReinitialize
+						initialValues={ obtenerCliente }
+						onSubmit={( valores ) => {
+								actualizarInfoCliente(valores)
+						}}
 					>
 						{props => {
-							console.log(props);
 							return (
 								<form
 									className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
@@ -77,7 +120,7 @@ const EditarCliente = () => {
 												placeholder="Nombre Cliente"
 												onChange={props.handleChange}
 												onBlur={props.handleBlur}
-												// value={formik.values.nombre}
+												value={props.values.nombre}
 											/>
 									</div>
 									{ props.touched.nombre && props.errors.nombre ? (
@@ -96,7 +139,7 @@ const EditarCliente = () => {
 												placeholder="Apellido Cliente"
 												onChange={props.handleChange}
 												onBlur={props.handleBlur}
-												// value={formik.values.apellido}
+												 value={props.values.apellido}
 											/>
 									</div>
 									{ props.touched.apellido && props.errors.apellido ? (
@@ -116,7 +159,7 @@ const EditarCliente = () => {
 												placeholder="Empresa Cliente"
 												onChange={props.handleChange}
 												onBlur={props.handleBlur}
-												// value={formik.values.empresa}
+												value={props.values.empresa}
 											/>
 									</div>
 									{ props.touched.empresa && props.errors.empresa ? (
@@ -135,7 +178,7 @@ const EditarCliente = () => {
 												placeholder="Email Cliente"
 												onChange={props.handleChange}
 												onBlur={props.handleBlur}
-												// value={formik.values.email}
+												value={props.values.email}
 											/>
 									</div>
 									{ props.touched.email && props.errors.email ? (
@@ -154,7 +197,7 @@ const EditarCliente = () => {
 												placeholder="Teléfono Cliente"
 												onChange={props.handleChange}
 												onBlur={props.handleBlur}
-												// value={formik.values.telefono}
+												value={props.values.telefono}
 											/>
 									</div>
 									
