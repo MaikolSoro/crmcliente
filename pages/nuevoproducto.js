@@ -2,8 +2,30 @@ import React from 'react';
 import Layout from '../components/Layout';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { gql, useMutation } from '@apollo/client';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/router';
+
+
+const NUEVO_PRODUCTO = gql`
+	mutation nuevoProducto($input: ProductoInput) {
+		nuevoProducto(input:$input){
+			id
+			nombre
+			existencia
+			precio
+	}
+}
+`;
+
 
 const NuevoProducto = () => {
+
+	// Routing
+	const router = useRouter();
+
+	// Mutation de apollo
+	const [nuevoProducto] = useMutation(NUEVO_PRODUCTO);
 
 	// Formulario para nuevos productos
 	const formik = useFormik({
@@ -22,7 +44,31 @@ const NuevoProducto = () => {
 			precio:Yup.number()
 					.required('El precio es obligatorio')
 					.positive('No se aceptan números negativos')
-		})
+		}),
+		onSubmit: async valores => {
+			const { nombre, existencia, precio } = valores
+			try {
+				const { data } = await nuevoProducto({
+					variables: {
+						input:{
+							nombre,
+							existencia,
+							precio
+						}
+					}
+				});
+				// Mostrar una alerta
+				Swal.fire(
+					'Creado',
+					'Se creó el producto correctamente',
+					'success'
+				)
+				//Rediccionar hacia los productos
+				router.push('/productos');
+			} catch (error) {
+				console.log(error);
+			}
+		}
 	})
 	return (
 		<Layout>
@@ -32,7 +78,7 @@ const NuevoProducto = () => {
 				<div className="w-full max-w-lg">
 					<form
 						className="bg-white shadow-md px-8 pt-6 pb-8 mb-4"
-						// onSubmit={formik.handleSubmit}
+						 onSubmit={formik.handleSubmit}
 					>
 						<div className="mb-4">
 							<label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
