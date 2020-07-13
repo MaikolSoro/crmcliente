@@ -14,8 +14,19 @@ const NUEVO_PRODUCTO = gql`
 			nombre
 			existencia
 			precio
+		}
 	}
-}
+`;
+const OBTENER_PRODUCTOS = gql`
+
+  query obtenerProductos{
+		obtenerProductos {
+			id
+			nombre
+			precio
+			existencia
+		}
+  	}
 `;
 
 
@@ -25,7 +36,21 @@ const NuevoProducto = () => {
 	const router = useRouter();
 
 	// Mutation de apollo
-	const [nuevoProducto] = useMutation(NUEVO_PRODUCTO);
+	const [nuevoProducto] = useMutation(NUEVO_PRODUCTO, {
+		update(cache, { data: { nuevoProducto }}) {
+			// obtener el objeto de cache
+			const { obtenerProductos } = cache.readQuery({
+				query: OBTENER_PRODUCTOS
+			});
+			// rescribir ese objeto
+			cache.writeQuery({
+				query: OBTENER_PRODUCTOS,
+				data: {
+					obtenerProductos: [...obtenerProductos, nuevoProducto]
+				}
+			});
+		}
+	});
 
 	// Formulario para nuevos productos
 	const formik = useFormik({

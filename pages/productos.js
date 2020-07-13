@@ -9,15 +9,14 @@ import Link from 'next/link';
  =============================================*/
 const OBTENER_PRODUCTOS = gql`
 
-query obtenerProductos{
-  	obtenerProductos {
-      id
-      nombre
-      precio
-      existencia
-    }
-}
-
+  query obtenerProductos{
+      obtenerProductos {
+        id
+        nombre
+        precio
+        existencia
+      }
+  }
 `;
 
 
