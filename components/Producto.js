@@ -1,8 +1,43 @@
 import React from 'react';
 import Swal from 'sweetalert2';
+import { gql, useMutation } from '@apollo/client';
 
+const ELIMINAR_PRODUCTO = gql`
+
+	mutation eliminarProducto($id: ID!) {
+		eliminarProducto(id: $id)
+	}
+`;
+
+const OBTENER_PRODUCTOS = gql`
+
+	query obtenerProductos{
+		obtenerProductos {
+		id
+		nombre
+		precio
+		existencia
+		}
+	}
+`;
 const Producto = ({ producto }) => {
 	const { nombre, precio, existencia, id } = producto;
+
+	// Mutation para eliminar productos
+
+	const [ eliminarProducto ] = useMutation(ELIMINAR_PRODUCTO, {
+		update(cache) {
+			const { obtenerProductos } = cache.readQuery({
+				query: OBTENER_PRODUCTOS
+			});
+			cache.writeQuery({
+				query: OBTENER_PRODUCTOS,
+				data: {
+					obtenerProductos: obtenerProductos.filter( productoActual => productoActual.id !== id )
+				}
+			})
+		}
+	});
 
 	 // Elimina un cliente
 	 const confirmarEliminarProducto = () => {
@@ -17,7 +52,21 @@ const Producto = ({ producto }) => {
             cancelButtonText: 'No, Cancelar'
           }).then( async (result) => {
             if (result.value) {
-
+				try {
+					// eliminar producto de la bd
+					const { data } = await eliminarProducto({
+						variables: {
+							id
+						}
+					});
+					swal.fire(
+						'Producto eliminado',
+						data.eliminarProducto,
+						'success'
+					)
+				} catch (error) {
+					console.log(error);
+				}
             }
           })
 	}
