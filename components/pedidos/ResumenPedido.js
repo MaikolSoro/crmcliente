@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PedidoContext from '../../context/pedidos/PedidoContext';
-
+import ProductoResumen from './ProductoResumen';
 
 
 const ResumenPedido = () => {
@@ -16,7 +16,12 @@ const ResumenPedido = () => {
 
 			{productos.length > 0 ? (
 				<>
-					<p>Si hay productos</p>
+					{ productos.map( producto => (
+						<ProductoResumen 
+							key={producto.id}
+							producto={producto}
+						/>
+					))}
 				</>
 			) : (
 				<p className="mt-5 text-sm">Aún no hay productos</p>
