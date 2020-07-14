@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState, useEffect } from 'react';
 import Select from 'react-select';
 import { gql, useQuery } from '@apollo/client';
 
@@ -16,11 +16,22 @@ const OBTENER_PRODUCTOS = gql`
 	
 const AsignarProductos = () => {
 
+	//state local del componente
+	const [ productos, setProductos] = useState([]);
+
 	//consulta a la base de datos
 
 	const { data, loading, error, } = useQuery(OBTENER_PRODUCTOS);
 
-	console.log(data);	
+	useEffect(() => {
+		//TODO: función para pasar a pedidosState
+	},[productos])
+	// console.log(data);	
+
+	const seleccionarProducto = producto => {
+		setProductos(producto);
+
+	}	
 
 	if(loading) return null;
 	const { obtenerProductos } = data;
@@ -30,7 +41,8 @@ const AsignarProductos = () => {
 			<Select 
 				className="mt-3"
 				 options={ obtenerProductos }
-				onChange={ opcion => seleccionarCliente(opcion) }
+				onChange={ opcion => seleccionarProducto(opcion) }
+				isMulti={ true }
 				getOptionValue={ opciones => opciones.id }
 				getOptionLabel={ opciones => `${opciones.nombre} - ${opciones.existencia} Disponibles` }
 				placeholder= "Busque o Seleccionar el cliente"
