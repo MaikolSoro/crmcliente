@@ -12,19 +12,16 @@ const PedidoState = ({children}) =>{
 
 	// State de pedidos
 	const initialState = {
-		cliente: [],
+		cliente: {},
 		productos: [],
 		total: 0
 	}
 	const [ state, dispatch] = useReducer(PedidoReducer, initialState);
 
-	const holaMundoEnUseReducer = () => {
-		console.log('Hola mundo');
-	}
 	return(
 		<PedidoContext.Provider
 			value={{
-				holaMundoEnUseReducer
+				
 			}}
 		>{children}
 		</PedidoContext.Provider>
