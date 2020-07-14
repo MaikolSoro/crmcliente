@@ -1,9 +1,16 @@
-import React,{ useState, useEffect } from 'react';
+import React,{ useContext } from 'react';
 import Layout from '../components/Layout';
 import AsignarCliente from '../components/pedidos/AsignarCliente';
 
+
+// Context de pedidos
+import PedidoContext from '../context/pedidos/PedidoContext';
+
 const NuevoPedido = () => {
 	 
+	//Utilizar  context y extraer sus funciones y valores
+	const pedidoContext = useContext(PedidoContext);
+	
 	
 	return ( 
 		<Layout>
