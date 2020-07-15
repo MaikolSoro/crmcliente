@@ -16,7 +16,8 @@ const ProductoResumen = ({producto}) => {
 
 	const  actualizarCantidad = () => {
 		const nuevoProducto = {...producto, cantidad: Number( cantidad )}
-		console.log(nuevoProducto)
+		// console.log(nuevoProducto)
+		cantidadProductos(nuevoProducto);
 	}
 	const { nombre, precio } = producto;
 
@@ -30,7 +31,7 @@ const ProductoResumen = ({producto}) => {
 					type="number"
 					placeholder="Cantidad"
 					className="shadow apperance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline md: ml-4"
-					onChange={(e) => setCantidad(e.target.value)}
+					onChange={e => setCantidad(e.target.value)}
 					value={cantidad}
 				/>
 			</div>
