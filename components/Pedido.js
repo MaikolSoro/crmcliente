@@ -1,21 +1,62 @@
 import React, { useState, useEffect } from 'react';
+import { gql, useMutation } from '@apollo/client';
+
+const ACTUALIZAR_PEDIDO = gql`
+    mutation actualizarPedido($id: ID!, $input: PedidoInput ) {
+        actualizarPedido(id: $id, input: $input) {
+            estado
+        }
+    }
+`;
 
 const Pedido = ({pedido}) => {
 
 	const { id, total, cliente: { nombre, apellido, telefono, email }, estado, cliente } = pedido;
 
-	console.log(pedido);
+	// Mutation para cambiar el estado de un pedido
+	const [ actualizarPedido ] = useMutation(ACTUALIZAR_PEDIDO);
 
 	const [estadoPedido, setEstadoPedido ] = useState(estado);
+	const [ clase, setClase ] = useState('');
 
 	useEffect(() => {
 		if(estadoPedido) {
 			setEstadoPedido(estadoPedido)
 		}
+		clasePedido();
 	},[ estadoPedido]);
+
+	  // Función que modifica el color del pedido de acuerdo a su estado
+	  const clasePedido = () => {
+        if(estadoPedido === 'PENDIENTE') {
+            setClase('border-yellow-500')
+        } else if (estadoPedido === 'COMPLETADO') {
+            setClase('border-green-500')
+        } else {
+            setClase('border-red-800')
+        }
+	}
+	
+	const cambiarEstadoPedido =  async nuevoEstado => {
+		try {
+			const {data} = await actualizarPedido({
+				variables: {
+                    id, 
+                    input: {
+                        estado: nuevoEstado,
+                        cliente: cliente.id
+                    }
+                }
+			});
+			console.log(data.actualizarPedido.estado)
+			setEstadoPedido(data.actualizarPedido.estado);
+		} catch (error) {
+			console.log(error);
+		}
+	}
 	return ( 
 	
-		<div className="border-t-4 mt-4 bg-white rounded p-6 md:grid md:grid-cols-2 md:gap-4 shadow-lg">
+		<div className={` ${clase} border-t-4 mt-4 bg-white rounded p-6 md:grid md:grid-cols-2 md:gap-4 shadow-lg`}>
 			<div>
 				<p className="font-bold text-gray-800">Cliente: {nombre} {apellido}</p>
 
@@ -35,13 +76,15 @@ const Pedido = ({pedido}) => {
 
 				<h2 className="text-gray-800 font-bold mt-10">Estado Pedido:</h2>
 
-				<select className="mt-2 appearance-none bg-blue-600 border border-blue-600 text-white p-2 text-center rounded leading-tight focus:outline-none focus:bg-blue-600 focus:border-blue-500 uppercase text-xs font-bold "
-				 value={estadoPedido}
-				>
-					<option value="COMPLETADO">COMPLETADO</option>
-					<option value="PENDIENTE">PENDIENTE</option>
-					<option value="CANCELADO">CANCELADO</option>
-				</select>
+				<select
+                    className="mt-2 appearance-none bg-blue-600 border border-blue-600 text-white p-2 text-center rounded leading-tight focus:outline-none focus:bg-blue-600 focus:border-blue-500 uppercase text-xs font-bold "
+                    value={estadoPedido}
+                    onChange={ e => cambiarEstadoPedido( e.target.value )  }
+                >
+                    <option value="COMPLETADO">COMPLETADO</option>
+                    <option value="PENDIENTE">PENDIENTE</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                </select>
 			</div>
 			<div>
 				<h2 className="text-gray-800 font-bold mt-2">Resumen del Pedido</h2>
