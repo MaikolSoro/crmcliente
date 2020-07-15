@@ -6,17 +6,17 @@ const ProductoResumen = ({producto}) => {
 
 	// context de pedidos
 	const pedidoContext = useContext(PedidoContext);
-	const { cantidadProductos } = pedidoContext;
+	const { cantidadProductos, actualizarTotal } = pedidoContext;
 
 	const [cantidad, setCantidad] = useState(0);
 
 	useEffect(() =>{
 		actualizarCantidad();
+		actualizarTotal();
 	},[cantidad])
 
 	const  actualizarCantidad = () => {
 		const nuevoProducto = {...producto, cantidad: Number( cantidad )}
-		// console.log(nuevoProducto)
 		cantidadProductos(nuevoProducto);
 	}
 	const { nombre, precio } = producto;
