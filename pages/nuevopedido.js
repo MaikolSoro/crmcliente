@@ -1,7 +1,7 @@
 import React,{ useContext } from 'react';
 import Layout from '../components/Layout';
 import AsignarCliente from '../components/pedidos/AsignarCliente'; 
-import AsignarProducto from '../components/pedidos/AsignarProducto'; 
+import AsignarProductos from '../components/pedidos/AsignarProductos'; 
 import ResumenPedido from '../components/pedidos/ResumenPedido'; 
 import Total from '../components/pedidos/Total'; 
 
@@ -22,7 +22,7 @@ const NuevoPedido = () => {
 			<div className="flex justify-center mt-5">
 				<div className="w-full max-w-lg">
 					<AsignarCliente />
-					<AsignarProducto />
+					<AsignarProductos />
 					<ResumenPedido />
 					<Total />
 					<button type="button" className={` bg-gray-800 w-full mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900 `}>Registrar Pedido</button>

@@ -9,6 +9,7 @@ const ResumenPedido = () => {
 	const pedidoContext = useContext(PedidoContext);
 	const { productos } = pedidoContext;
 	console.log(productos);
+	
 	return (  
 
 		<>
@@ -30,4 +31,4 @@ const ResumenPedido = () => {
 	);
 }
  
-export default ResumenPedido
+export default ResumenPedido;
