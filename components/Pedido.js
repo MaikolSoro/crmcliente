@@ -15,13 +15,33 @@ const ELIMINAR_PEDIDO = gql`
 	eliminarPedido(id: $id)
 	}
 `;
+
+const OBTENER_PEDIDOS = gql`
+  query obtenerPedidosVendedor {
+		obtenerPedidosVendedor {
+			id
+		}
+  	}
+`;
 const Pedido = ({pedido}) => {
 
 	const { id, total, cliente: { nombre, apellido, telefono, email }, estado, cliente } = pedido;
 
 	// Mutation para cambiar el estado de un pedido
 	const [ actualizarPedido ] = useMutation(ACTUALIZAR_PEDIDO);
-	const [ eliminarPedido ] = useMutation(ELIMINAR_PEDIDO);
+	const [ eliminarPedido ] = useMutation(ELIMINAR_PEDIDO, {
+		update(cache) {
+			const { obtenerPedidosVendedor } = cache.readQuery({
+				query: OBTENER_PEDIDOS
+			});
+			cache.writeQuery({
+				query: OBTENER_PEDIDOS,
+				data: {
+					obtenerPedidosVendedor: obtenerPedidosVendedor.filter( pedido => pedido.id != id)
+				}
+			})
+		}
+	});
 
 	const [estadoPedido, setEstadoPedido ] = useState(estado);
 	const [ clase, setClase ] = useState('');
@@ -86,7 +106,7 @@ const Pedido = ({pedido}) => {
 						data.eliminarPedido,
 						'success'
 					);
-					
+
 				} catch (error) {
 					console.log(error);
 				}
