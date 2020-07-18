@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useMutation } from '@apollo/client';
+import Swal from 'sweetalert2';
+
 
 const ACTUALIZAR_PEDIDO = gql`
     mutation actualizarPedido($id: ID!, $input: PedidoInput ) {
@@ -8,13 +10,18 @@ const ACTUALIZAR_PEDIDO = gql`
         }
     }
 `;
-
+const ELIMINAR_PEDIDO = gql`
+	mutation eliminarPedido($id: ID!) {
+	eliminarPedido(id: $id)
+	}
+`;
 const Pedido = ({pedido}) => {
 
 	const { id, total, cliente: { nombre, apellido, telefono, email }, estado, cliente } = pedido;
 
 	// Mutation para cambiar el estado de un pedido
 	const [ actualizarPedido ] = useMutation(ACTUALIZAR_PEDIDO);
+	const [ eliminarPedido ] = useMutation(ELIMINAR_PEDIDO);
 
 	const [estadoPedido, setEstadoPedido ] = useState(estado);
 	const [ clase, setClase ] = useState('');
@@ -53,6 +60,38 @@ const Pedido = ({pedido}) => {
 		} catch (error) {
 			console.log(error);
 		}
+	}
+
+	const confirmarEliminarPedido = () => {
+
+		Swal.fire({
+            title: '¿Deseas eliminar a este pedido?',
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Eliminar',
+            cancelButtonText: 'No, Cancelar'
+          }).then( async (result) => {
+            if (result.value) {
+				try {
+					const data= await eliminarPedido({
+						variables:{
+							id
+						}
+					});
+					Swal.fire(
+						'Eliminado',
+						data.eliminarPedido,
+						'success'
+					);
+					
+				} catch (error) {
+					console.log(error);
+				}
+            }
+          })
 	}
 	return ( 
 	
@@ -97,7 +136,10 @@ const Pedido = ({pedido}) => {
 				 <p className="text-gray-800 mt-3 font-bold ">Total a pagar:
                     <span className="font-light"> $ {total}</span>
                 </p>
-				<button  className="uppercase text-xs font-bold  flex items-center mt-4 bg-red-800 px-5 py-2 inline-block text-white rounded leading-tight">
+				<button  
+				className="uppercase text-xs font-bold  flex items-center mt-4 bg-red-800 px-5 py-2 inline-block text-white rounded leading-tight"
+				onClick={() => confirmarEliminarPedido() }
+				>
 					Eliminar Pedido
 					<svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4 ml-2"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
 				</button>
