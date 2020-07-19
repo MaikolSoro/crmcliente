@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Layout from '../components/Layout';
 import {
-	BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+	BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
   } from 'recharts';
 
   import { gql, useQuery } from '@apollo/client';
@@ -43,22 +43,24 @@ const MejoresVendedores = () => {
 	return (  
 		<Layout>
 			<h1 className="text-2xl-gray-800 font-smaller">Mejores Vendedores</h1>
-			<BarChart
-				className="mt-10"
-				width={600}
-				height={500}
-				data={vendedorGrafica}
-				margin={{
-					top: 5, right: 30, left: 20, bottom: 5,
-				}}
-      		>
-				<CartesianGrid strokeDasharray="3 3" />
-				<XAxis dataKey="nombre" />
-				<YAxis />
-				<Tooltip />
-				<Legend />
-				<Bar dataKey="total" fill="#3182CE" />
-			</BarChart>
+			<ResponsiveContainer width={'99%'} height={550}>
+				<BarChart
+					className="mt-10"
+					width={600}
+					height={500}
+					data={vendedorGrafica}
+					margin={{
+						top: 5, right: 30, left: 20, bottom: 5,
+					}}
+				>
+					<CartesianGrid strokeDasharray="3 3" />
+					<XAxis dataKey="nombre" />
+					<YAxis />
+					<Tooltip />
+					<Legend />
+					<Bar dataKey="total" fill="#3182CE" />
+				</BarChart>
+			</ResponsiveContainer>
 		</Layout>
 	);
 }
