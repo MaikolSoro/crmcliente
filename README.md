@@ -2,7 +2,9 @@
 
 ## ✔ Technologies
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [GraphQL Documentation](https://graphql.org/)
+- [Tailwind Documentation](https://tailwindcss.com/)
+- [GraphQL Documentation](https://graphql.org/).
+- [Apollo CLient Documentation](https://www.apollographql.com/apollo-client)
 ## 🚀 Installation
    ## Prerequisites
  
