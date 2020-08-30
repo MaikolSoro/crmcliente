@@ -1,5 +1,5 @@
 ## CRM CLIENTS
-
+Crm website for customers that allows you to create customers, orders, products and also shows the best customers, sellers, through graphs🌐📝
 ## ✔ Technologies
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Tailwind Documentation](https://tailwindcss.com/)
