@@ -46,6 +46,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 📷 Preview
 ![Captura de pantalla (65)](https://user-images.githubusercontent.com/46753453/91648950-4926e300-ea2b-11ea-83ba-0429a30da772.png)
 ![Captura de pantalla (71)](https://user-images.githubusercontent.com/46753453/91648954-504df100-ea2b-11ea-9434-bda371aa53d0.png)
-![Captura de pantalla (70)](https://user-images.githubusercontent.com/46753453/91648955-5217b480-ea2b-11ea-9aba-38e7ca65943e.png)
-![Captura de pantalla (79)](https://user-images.githubusercontent.com/46753453/91648956-5a6fef80-ea2b-11ea-9749-48f9621927cb.png)
+
 
