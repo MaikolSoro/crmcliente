@@ -1,5 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## CRM CLIENTES
 
+## ✔ Technologies
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+
+## 🚀 Installation
+   ## Prerequisites
+ 
+   - Have yarn installed
+   - Node 12 LTS. 
+   
+ ## Installation
+  - fork and  ```clone``` the repository to your account or download the latest release.
+  - Open the cloned repository on your machine.
+  - Run  ```yarn install``` to get all the dependencies.
+  
 ## Getting Started
 
 First, run the development server:
